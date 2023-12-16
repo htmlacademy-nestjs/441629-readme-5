@@ -43,13 +43,11 @@ export class AuthenticationService {
       throw new NotFoundException(AUTH.USER_NOT_FOUND);
     }
 
-    const blogUserEntity = new BlogUserEntity(existUser);
-
-    if (!await blogUserEntity.comparePassword(password)) {
+    if (!await existUser.comparePassword(password)) {
       throw new UnauthorizedException(AUTH.USER_PASSWORD_WRONG);
     }
 
-    return blogUserEntity.toPOJO();
+    return existUser;
   }
 
   public async getUser(id: string) {
