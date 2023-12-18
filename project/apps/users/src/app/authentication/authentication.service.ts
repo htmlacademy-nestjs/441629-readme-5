@@ -22,7 +22,7 @@ export class AuthenticationService {
     };
 
     const existUser = await this.blogUserRepository
-      .findById(email);
+      .findByEmail(email);
 
     if (existUser) {
       throw new ConflictException(AUTH.USER_EXISTS);
@@ -51,6 +51,12 @@ export class AuthenticationService {
   }
 
   public async getUser(id: string) {
-    return this.blogUserRepository.findById(id);
+    const existUser = await this.blogUserRepository.findById(id);
+
+    if (!existUser) {
+      throw new NotFoundException(`User with id ${id} not found.`);
+    }
+
+    return existUser;
   }
 }

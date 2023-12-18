@@ -14,6 +14,10 @@ export class BlogUserEntity implements IAuthUser, Entity<string> {
     this.populate(user);
   }
 
+  static fromObject(data: IAuthUser): BlogUserEntity {
+    return new BlogUserEntity(data);
+  }
+
   public toPOJO() {
     return {
       id: this.id,
@@ -28,6 +32,7 @@ export class BlogUserEntity implements IAuthUser, Entity<string> {
     this.email = data.email;
     this.name = data.name;
     this.avatar = data.avatar;
+    this.passwordHash = data.passwordHash;
   }
 
   public async setPassword(password: string): Promise<BlogUserEntity> {
