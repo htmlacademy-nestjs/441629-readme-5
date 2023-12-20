@@ -44,7 +44,7 @@ export class AuthenticationController {
   ) {
     const verifiedUser = await this.authService.verifyUser(dto);
 
-    return fillDto(LoggedUserRdo, verifiedUser);
+    return fillDto(LoggedUserRdo, verifiedUser.toPOJO());
   }
 
   @ApiResponse({
