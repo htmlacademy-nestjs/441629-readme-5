@@ -1,8 +1,8 @@
 import { randomUUID } from 'crypto';
 import { Entity, EntityIdType } from './entity.interface';
-import { Repository } from './repository.interface';
+import { IRepository } from './repository.interface';
 
-export abstract class BaseMemoryRepository<T extends Entity<EntityIdType>> implements Repository<T> {
+export abstract class BaseMemoryRepository<T extends Entity<EntityIdType>> implements IRepository<T> {
   protected entities: Map<T['id'], T> = new Map();
 
   public async findById(id: T['id']): Promise<T | null> {

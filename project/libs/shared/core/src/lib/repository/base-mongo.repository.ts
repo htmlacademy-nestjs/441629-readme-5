@@ -1,12 +1,12 @@
 import { Document, Model } from 'mongoose';
 import { NotFoundException } from '@nestjs/common';
 import { Entity, EntityIdType } from './entity.interface';
-import { Repository } from './repository.interface';
+import { IRepository } from './repository.interface';
 
 export abstract class BaseMongoRepository<
   EntityType extends Entity<EntityIdType>,
   DocumentType extends Document
-> implements Repository<EntityType> {
+> implements IRepository<EntityType> {
   constructor(
     protected readonly model: Model<DocumentType>,
     private readonly createEntity: (document: DocumentType) => EntityType,
