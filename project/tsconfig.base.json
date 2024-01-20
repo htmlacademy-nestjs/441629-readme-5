@@ -20,6 +20,9 @@
       "@project/shared/config/file-vault": [
         "libs/shared/config/file-vault/src/index.ts"
       ],
+      "@project/shared/config/notify": [
+        "libs/shared/config/notify/src/index.ts"
+      ],
       "@project/shared/config/users": ["libs/shared/config/users/src/index.ts"],
       "@project/shared/core": ["libs/shared/core/src/index.ts"],
       "@project/shared/helpers": ["libs/shared/helpers/src/index.ts"]
