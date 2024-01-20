@@ -110,6 +110,10 @@ export class BlogPostRepository extends BasePostgresRepository<BlogPostEntity, I
       }
     }
 
+    if (query?.userId) {
+      where.userId = query.userId;
+    }
+
     if (query?.sortDirection) {
       orderBy.createdAt = query.sortDirection;
     }

@@ -1,4 +1,4 @@
-import { IsArray, IsIn, IsNumber, IsOptional, IsUUID } from 'class-validator';
+import { IsArray, IsIn, IsMongoId, IsNumber, IsOptional, IsUUID } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { POST } from '../blog-post.constant';
 import { SortDirectionEnum } from '@project/shared/app/types';
@@ -13,6 +13,10 @@ export class BlogPostQuery {
   @IsArray()
   @IsOptional()
   public tags?: string[];
+
+  @IsMongoId()
+  @IsOptional()
+  public userId: string;
 
   @IsIn(Object.values(SortDirectionEnum))
   @IsOptional()

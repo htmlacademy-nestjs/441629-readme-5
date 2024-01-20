@@ -5,7 +5,13 @@ GET http://localhost:3000/api/posts HTTP/1.1
 
 # Get posts with filter
 
-GET http://localhost:3000/api/posts?limit=1&sortDirection=desc&page=2 HTTP/1.1
+GET http://localhost:3000/api/posts?tags[]=ad48ef46-6ea6-41c4-a19f-e66b82bdf855&limit=5&sortDirection=asc&page=1 HTTP/1.1
+
+###
+
+# Get posts with filter userId
+
+GET http://localhost:3000/api/posts?sortDirection=desc&userId=6580462f5e238357ab17003a HTTP/1.1
 
 ###
 
