@@ -29,6 +29,7 @@ export class BlogUserEntity implements IAuthUser, Entity<string> {
   }
 
   public populate(data: IAuthUser): void {
+    this.id = data._id;
     this.email = data.email;
     this.name = data.name;
     this.avatar = data.avatar;

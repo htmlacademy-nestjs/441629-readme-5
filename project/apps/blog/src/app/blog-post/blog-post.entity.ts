@@ -27,10 +27,11 @@ export class BlogPostEntity implements IPost, Entity<string, IPost> {
     const entity = new BlogPostEntity();
 
     entity.tags = tags;
+    entity.postType = dto.postType;
     entity.title = dto.title;
     entity.link = dto.link;
     entity.preview = dto.preview;
-    entity.text = dto.preview;
+    entity.text = dto.text;
     entity.author = dto.author;
     entity.photo = dto.photo;
     entity.description = dto.description;

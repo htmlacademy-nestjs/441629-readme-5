@@ -22,8 +22,6 @@ export class BlogPostService {
     const tags = await this.blogTagService.getTagsByIds(dto.tags);
     const newPost = BlogPostEntity.fromDto(dto, tags);
 
-    console.log(newPost)
-
     await this.blogPostRepository.save(newPost);
 
     return newPost;
