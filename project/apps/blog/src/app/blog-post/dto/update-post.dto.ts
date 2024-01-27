@@ -1,4 +1,4 @@
-import { IsArray, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsArray, IsMongoId, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class UpdatePostDto {
   @IsString()
@@ -36,8 +36,20 @@ export class UpdatePostDto {
   @IsOptional()
   public description?: string;
 
+  @IsArray()
+  @IsMongoId({ each: true })
+  @IsOptional()
+  public likes?: string[];
+
+  @IsArray()
+  @IsOptional()
+  public comments?: string[];
+
   @IsUUID('all', { each: true })
   @IsArray()
   @IsOptional()
   public tags?: string[];
+
+  @IsMongoId()
+  public userId: string;
 }

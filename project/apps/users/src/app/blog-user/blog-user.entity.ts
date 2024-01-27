@@ -9,6 +9,8 @@ export class BlogUserEntity implements IAuthUser, Entity<string> {
   public name: string;
   public avatar?: string;
   public passwordHash: string;
+  public createdAt?: Date;
+  public updatedAt?: Date;
 
   constructor(user: IAuthUser) {
     this.populate(user);
@@ -25,6 +27,8 @@ export class BlogUserEntity implements IAuthUser, Entity<string> {
       name: this.name,
       avatar: this.avatar,
       passwordHash: this.passwordHash,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
     };
   }
 
@@ -34,6 +38,8 @@ export class BlogUserEntity implements IAuthUser, Entity<string> {
     this.name = data.name;
     this.avatar = data.avatar;
     this.passwordHash = data.passwordHash;
+    this.createdAt = data.createdAt ?? undefined;
+    this.updatedAt = data.updatedAt ?? undefined;
   }
 
   public async setPassword(password: string): Promise<BlogUserEntity> {

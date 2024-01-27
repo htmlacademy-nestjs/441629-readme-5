@@ -11,6 +11,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { createJWTPayload } from '@project/shared/helpers';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class AuthenticationService {
@@ -49,6 +50,26 @@ export class AuthenticationService {
       .save(userEntity);
   }
 
+  public async changePassword(dto: ChangePasswordDto) {
+    const { userId, password, newPassword } = dto;
+
+    const existUser = await this.blogUserRepository.findById(userId);
+
+    if (!existUser) {
+      throw new ConflictException(AUTH.USER_NOT_FOUND);
+    }
+
+    if (!await existUser.comparePassword(password)) {
+      throw new UnauthorizedException(AUTH.USER_PASSWORD_WRONG);
+    }
+
+    const userEntity = await existUser
+      .setPassword(newPassword);
+
+    return this.blogUserRepository
+      .update(userId, userEntity);
+  }
+
   public async verifyUser(dto: LoginUserDto) {
     const { email, password } = dto;
     const existUser = await this.blogUserRepository.findByEmail(email);
@@ -72,6 +93,12 @@ export class AuthenticationService {
     }
 
     return existUser;
+  }
+
+  public async getManyUsers(ids: string[]) {
+    const existUsers = await this.blogUserRepository.findManyById(ids);
+
+    return existUsers;
   }
 
   public async getUserByEmail(email: string) {

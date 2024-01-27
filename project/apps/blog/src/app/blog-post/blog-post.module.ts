@@ -5,9 +5,10 @@ import { BlogPostController } from './blog-post.controller';
 import { BlogPostService } from './blog-post.service';
 import { BlogPostRepository } from './blog-post.repository';
 import { BlogTagModule } from '../blog-tag/blog-tag.module';
+import { BlogCommentModule } from '../blog-comment/blog-comment.module';
 
 @Module({
-  imports: [BlogTagModule, PrismaClientModule],
+  imports: [BlogTagModule, BlogCommentModule, PrismaClientModule],
   controllers: [BlogPostController],
   providers: [BlogPostService, BlogPostRepository],
   exports: [BlogPostService],

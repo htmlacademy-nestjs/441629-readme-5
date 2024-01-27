@@ -1,0 +1,27 @@
+# Get all comments for post
+
+GET http://localhost:4000/api/blog/ae73a1ab-34fc-4290-a9e4-676beead191f/comments/?limit=1 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NWIyOWM0NmY0ZmI5NzA0NWQxYjJlY2IiLCJlbWFpbCI6Im5ld3Vpc2VyQGVtYWlsLnRlc3QiLCJuYW1lIjoiVXNlciBOYW1lIiwiaWF0IjoxNzA2MzQ3MzY1LCJleHAiOjE3MDY0MzM3NjV9.MfDLUEgPPbLZ2V56Fat7aOYoCkl4kAcwcqSUDyJo7Lk
+
+###
+
+
+# Create a new comment for post
+
+POST http://localhost:4000/api/blog/ae73a1ab-34fc-4290-a9e4-676beead191f/comments HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NWIyOWM0NmY0ZmI5NzA0NWQxYjJlY2IiLCJlbWFpbCI6Im5ld3Vpc2VyQGVtYWlsLnRlc3QiLCJuYW1lIjoiVXNlciBOYW1lIiwiaWF0IjoxNzA2MzQ3MzY1LCJleHAiOjE3MDY0MzM3NjV9.MfDLUEgPPbLZ2V56Fat7aOYoCkl4kAcwcqSUDyJo7Lk
+Content-Type: application/json
+
+{
+  "message": "One more new comment"
+}
+
+###
+
+
+# Delete comment by id
+
+DELETE http://localhost:4000/api/blog/4a88caac-2951-45c7-9790-39ee75aeb882/comments HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NWIyOWM0NmY0ZmI5NzA0NWQxYjJlY2IiLCJlbWFpbCI6Im5ld3Vpc2VyQGVtYWlsLnRlc3QiLCJuYW1lIjoiVXNlciBOYW1lIiwiaWF0IjoxNzA2MzQ3MzY1LCJleHAiOjE3MDY0MzM3NjV9.MfDLUEgPPbLZ2V56Fat7aOYoCkl4kAcwcqSUDyJo7Lk
+
+###

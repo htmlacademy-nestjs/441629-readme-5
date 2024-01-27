@@ -29,4 +29,10 @@ export class UserRdo {
   })
   @Expose()
   public avatar: string;
+
+  @Expose()
+  public updatedAt: string;
+
+  @Expose()
+  public createdAt: string;
 }

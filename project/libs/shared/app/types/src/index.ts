@@ -7,6 +7,7 @@ export * from './lib/post.interface';
 export * from './lib/rabbit-routing.enum';
 export * from './lib/refresh-token-payload.interface';
 export * from './lib/request-with-token-payload.interface';
+export * from './lib/sort.enum';
 export * from './lib/sort-direction.enum';
 export * from './lib/stored-file.interface';
 export * from './lib/subscriber.interface';

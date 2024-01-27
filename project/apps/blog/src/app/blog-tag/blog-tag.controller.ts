@@ -4,13 +4,19 @@ import { BlogTagService } from './blog-tag.service';
 import { TagRdo } from './rdo/tag.rdo';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Blog tag service')
 @Controller('tags')
 export class BlogTagController {
   constructor(
     private readonly blogTagService: BlogTagService,
   ) { }
 
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Get list of tags',
+  })
   @Get('/')
   public async index() {
     const blogTagEntities = await this.blogTagService.getAllTags();
@@ -19,6 +25,9 @@ export class BlogTagController {
     return fillDto(TagRdo, tags);
   }
 
+  @ApiResponse({
+    description: 'Get tag by id',
+  })
   @Get('/:id')
   public async show(
     @Param('id')
@@ -27,6 +36,10 @@ export class BlogTagController {
     return this.blogTagService.getTag(id);
   }
 
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Create tag',
+  })
   @Post('/')
   public async create(
     @Body()

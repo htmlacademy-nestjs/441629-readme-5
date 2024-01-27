@@ -12,6 +12,7 @@ import { BlogUserEntity } from '../blog-user/blog-user.entity';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { RequestWithTokenPayload } from '@project/shared/app/types';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 interface RequestWithUser {
   user?: BlogUserEntity,
@@ -42,6 +43,18 @@ export class AuthenticationController {
     return fillDto(UserRdo, newUser.toPOJO());
   }
 
+  @HttpCode(HttpStatus.ACCEPTED)
+  @Post('password')
+  public async password(
+    @Body()
+    dto: ChangePasswordDto,
+  ) {
+    const user = await this.authService.changePassword(dto);
+    const { email, name } = user;
+
+    return fillDto(UserRdo, user.toPOJO());
+  }
+
   @ApiResponse({
     type: LoggedUserRdo,
     status: HttpStatus.OK,
@@ -60,6 +73,28 @@ export class AuthenticationController {
     const userToken = await this.authService.createUserToken(user);
 
     return fillDto(LoggedUserRdo, { ...user.toPOJO(), ...userToken });
+  }
+
+  @ApiResponse({
+    type: UserRdo,
+    status: HttpStatus.OK,
+    description: 'User found',
+  })
+  @HttpCode(HttpStatus.OK)
+  @Get('info')
+  public async info(
+    @Body()
+    { ids }: { ids: string[] }
+  ) {
+    const users = await this.authService.getManyUsers(ids);
+
+    const result = {};
+    users.forEach((item: BlogUserEntity) => {
+      const user = fillDto(UserRdo, item.toPOJO());
+      result[item.id] = user;
+    })
+
+    return result;
   }
 
   @ApiResponse({
