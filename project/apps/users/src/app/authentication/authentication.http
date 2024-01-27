@@ -3,8 +3,8 @@ POST http://localhost:3000/api/auth/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "notify@email.test",
-  "name": "Notify Name",
+  "email": "newuiser@email.test",
+  "name": "User Name",
   "password": "123456"
 }
 
@@ -12,7 +12,7 @@ Content-Type: application/json
 
 # Get user by ID
 GET http://localhost:3000/api/auth/6580462f5e238357ab17003a HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAZW1haWwudGVzdCIsIm5hbWUiOiJUZXN0IE5hbWUiLCJpYXQiOjE3MDU1ODQzMTgsImV4cCI6MTcwNTY3MDcxOH0.kLACdKNGBk2ziEe3NAO608CHmNe_KDYcIeswSUOabzk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTgwNDYyZjVlMjM4MzU3YWIxNzAwM2EiLCJlbWFpbCI6InVzZXJAZW1haWwudGVzdCIsIm5hbWUiOiJUZXN0IE5hbWUiLCJpYXQiOjE3MDYxOTYwMTgsImV4cCI6MTcwNjI4MjQxOH0.Zxq0Rp_FuQBqUaf5OYiNysqKF46YS7srH7jLxTSQqBw
 
 
 ###
@@ -25,5 +25,31 @@ Content-Type: application/json
   "email": "user@email.test",
   "password": "123456"
 }
+
+###
+
+# Update password
+POST http://localhost:3000/api/auth/password HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTgwNDYyZjVlMjM4MzU3YWIxNzAwM2EiLCJlbWFpbCI6InVzZXJAZW1haWwudGVzdCIsIm5hbWUiOiJUZXN0IE5hbWUiLCJpYXQiOjE3MDYyNzcxMzYsImV4cCI6MTcwNjM2MzUzNn0.YI_tFaDOzhgpoVcdRjTwhfo-ZnsQbIOvbfU48rZ_sgk
+Content-Type: application/json
+
+{
+  "userId": "6580462f5e238357ab17003a",
+  "password": "123456",
+  "newPassword": "qwerty"
+}
+
+###
+
+# Get a new JWT pair
+
+POST http://localhost:3000/api/auth/refresh HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTgwNDYyZjVlMjM4MzU3YWIxNzAwM2EiLCJlbWFpbCI6InVzZXJAZW1haWwudGVzdCIsIm5hbWUiOiJUZXN0IE5hbWUiLCJ0b2tlbklkIjoiOTk0YmE1NmUtNDA4Ny00ZWM3LWFjZWUtM2VkN2RlMDQyOTU4IiwiaWF0IjoxNzA1ODQ0OTEzLCJleHAiOjE3MDY3MDg5MTN9.dcC3zAr1h3g5rO4todLNH6_27azcl_KcO2DUe04HoDg
+
+###
+
+# Check user token
+POST http://localhost:3000/api/auth/check HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAZW1haWwudGVzdCIsIm5hbWUiOiJUZXN0IE5hbWUiLCJpYXQiOjE3MDU4MzQxNDEsImV4cCI6MTcwNTkyMDU0MX0.ulYo5ZV2u7iO1k2NEkwqimZaE1usAp3QQCliWwOWrhg
 
 ###

@@ -1,7 +1,7 @@
-import { IsArray, IsIn, IsMongoId, IsNumber, IsOptional, IsUUID } from 'class-validator';
+import { IsArray, IsEnum, IsIn, IsMongoId, IsNumber, IsOptional, IsUUID } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { POST } from '../blog-post.constant';
-import { SortDirectionEnum } from '@project/shared/app/types';
+import { SortDirectionEnum, SortEnum } from '@project/shared/app/types';
 
 export class BlogPostQuery {
   @Transform(({ value }) => +value || POST.COUNT_LIMIT)
@@ -17,6 +17,10 @@ export class BlogPostQuery {
   @IsMongoId()
   @IsOptional()
   public userId: string;
+
+  @IsEnum(SortEnum)
+  @IsOptional()
+  public sortType: SortEnum;
 
   @IsIn(Object.values(SortDirectionEnum))
   @IsOptional()

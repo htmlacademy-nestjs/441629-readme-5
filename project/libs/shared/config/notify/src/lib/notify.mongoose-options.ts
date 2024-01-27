@@ -5,7 +5,6 @@ import { getMongoConnectionString } from '@project/shared/helpers';
 export function getMongooseOptions(): MongooseModuleAsyncOptions {
   return {
     useFactory: async (config: ConfigService) => {
-      console.log(config, config.get<string>('application.db.port'))
       return {
         uri: getMongoConnectionString({
           username: config.get<string>('application.db.user'),

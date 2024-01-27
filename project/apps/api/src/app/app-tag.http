@@ -1,0 +1,22 @@
+# Get all tags
+GET http://localhost:4000/api/tags HTTP/1.1
+
+###
+
+# Get tag by ID
+
+GET http://localhost:4000/api/tags/ad48ef46-6ea6-41c4-a19f-e66b82bdf855 HTTP/1.1
+
+###
+
+# Create a new tag
+
+POST http://localhost:4000/api/tags HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NWIyOWM0NmY0ZmI5NzA0NWQxYjJlY2IiLCJlbWFpbCI6Im5ld3Vpc2VyQGVtYWlsLnRlc3QiLCJuYW1lIjoiVXNlciBOYW1lIiwiaWF0IjoxNzA2MzQ3MzY1LCJleHAiOjE3MDY0MzM3NjV9.MfDLUEgPPbLZ2V56Fat7aOYoCkl4kAcwcqSUDyJo7Lk
+Content-Type: application/json
+
+{
+  "title": "newyear"
+}
+
+###

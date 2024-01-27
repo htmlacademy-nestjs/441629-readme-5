@@ -1,7 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { BasePostgresRepository } from '@project/shared/core';
 import { BlogPostEntity } from './blog-post.entity';
-import { IPagination, IPost } from '@project/shared/app/types';
+import { IPagination, IPost, SortDirectionEnum, SortEnum } from '@project/shared/app/types';
 import { PrismaClientService } from '@project/shared/blog/models';
 import { Prisma } from '@prisma/client';
 import { BlogPostQuery } from './query/blog-post.query';
@@ -31,12 +31,65 @@ export class BlogPostRepository extends BasePostgresRepository<BlogPostEntity, I
           connect: pojoEntity.tags.map(({ id }) => ({ id })),
         },
         comments: {
-          connect: [],
+          connect: pojoEntity.comments.map(({ id }) => ({ id })),
         }
       }
     });
 
     entity.id = record.id;
+
+    return entity;
+  }
+
+  public async repost(id: string, userId: string): Promise<BlogPostEntity> {
+    const document = await this.client.post.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        tags: true,
+        comments: true,
+      }
+    });
+
+    if (!document) {
+      throw new NotFoundException(`Post with id ${id} not found.`);
+    }
+
+    if (await this.client.post.findFirst({
+      where: {
+        userId,
+        originalId: document.originalId,
+      }
+    })) {
+      throw new ConflictException(`User should only one repost of a post`);
+    }
+
+    const record = await this.client.post.create({
+      data: {
+        ...document,
+        originalId: document.originalId ?? document.id,
+        originalUserId: document.userId,
+        id: undefined,
+        createdAt: undefined,
+        updatedAt: undefined,
+        userId,
+        likes: [],
+        isRepost: true,
+        tags: {
+          connect: document.tags.map(({ id }) => ({ id })),
+        },
+        comments: {
+          connect: [],
+        }
+      },
+      include: {
+        tags: true,
+        comments: true,
+      }
+    });
+
+    const entity = this.createEntityFromDocument(record);
 
     return entity;
   }
@@ -81,6 +134,11 @@ export class BlogPostRepository extends BasePostgresRepository<BlogPostEntity, I
         author: pojoEntity.author,
         photo: pojoEntity.photo,
         description: pojoEntity.description,
+        likes: pojoEntity.likes,
+        isPublished: pojoEntity.isPublished,
+        comments: {
+          set: pojoEntity.comments.map(comment => ({ id: comment.id })),
+        },
         tags: {
           set: pojoEntity.tags.map(tag => ({ id: tag.id })),
         },
@@ -100,6 +158,8 @@ export class BlogPostRepository extends BasePostgresRepository<BlogPostEntity, I
     const where: Prisma.PostWhereInput = {};
     const orderBy: Prisma.PostOrderByWithRelationInput = {};
 
+    where.isPublished = true;
+
     if (query?.tags) {
       where.tags = {
         some: {
@@ -114,8 +174,20 @@ export class BlogPostRepository extends BasePostgresRepository<BlogPostEntity, I
       where.userId = query.userId;
     }
 
-    if (query?.sortDirection) {
-      orderBy.createdAt = query.sortDirection;
+    const sortDirection = query?.sortDirection ?? SortDirectionEnum.Desc;
+
+    if (query?.sortType) {
+      if (query.sortType === SortEnum.likes) {
+        orderBy.likes = sortDirection;
+      } else if (query.sortType === SortEnum.comments) {
+        orderBy.comments = {
+          _count: sortDirection,
+        }
+      } else {
+        orderBy.createdAt = sortDirection;
+      }
+    } else {
+      orderBy.createdAt = sortDirection
     }
 
     const [records, postCount] = await Promise.all([

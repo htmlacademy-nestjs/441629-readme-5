@@ -1,14 +1,22 @@
-import { Body, Controller, Get, HttpStatus, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthenticationService } from './authentication.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { fillDto } from '@project/shared/helpers';
 import { UserRdo } from './rdo/user.rdo';
-import { LoginUserDto } from './dto/login-user.dto';
 import { LoggedUserRdo } from './rdo/logged-user.rdo';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MongoIdValidationPipe } from '@project/shared/core';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { NotifyService } from '../notify/notify.service';
+import { BlogUserEntity } from '../blog-user/blog-user.entity';
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
+import { RequestWithTokenPayload } from '@project/shared/app/types';
+import { ChangePasswordDto } from './dto/change-password.dto';
+
+interface RequestWithUser {
+  user?: BlogUserEntity,
+}
 
 @ApiTags('authentication')
 @Controller('auth')
@@ -35,6 +43,18 @@ export class AuthenticationController {
     return fillDto(UserRdo, newUser.toPOJO());
   }
 
+  @HttpCode(HttpStatus.ACCEPTED)
+  @Post('password')
+  public async password(
+    @Body()
+    dto: ChangePasswordDto,
+  ) {
+    const user = await this.authService.changePassword(dto);
+    const { email, name } = user;
+
+    return fillDto(UserRdo, user.toPOJO());
+  }
+
   @ApiResponse({
     type: LoggedUserRdo,
     status: HttpStatus.OK,
@@ -44,21 +64,43 @@ export class AuthenticationController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Password or login is wrong.',
   })
+  @UseGuards(LocalAuthGuard)
   @Post('login')
   public async login(
-    @Body()
-    dto: LoginUserDto,
+    @Req()
+    { user }: RequestWithUser
   ) {
-    const verifiedUser = await this.authService.verifyUser(dto);
-    const userToken = await this.authService.createUserToken(verifiedUser);
+    const userToken = await this.authService.createUserToken(user);
 
-    return fillDto(LoggedUserRdo, { ...verifiedUser.toPOJO(), ...userToken });
+    return fillDto(LoggedUserRdo, { ...user.toPOJO(), ...userToken });
   }
 
   @ApiResponse({
     type: UserRdo,
     status: HttpStatus.OK,
-    description: 'User found'
+    description: 'User found',
+  })
+  @HttpCode(HttpStatus.OK)
+  @Get('info')
+  public async info(
+    @Body()
+    { ids }: { ids: string[] }
+  ) {
+    const users = await this.authService.getManyUsers(ids);
+
+    const result = {};
+    users.forEach((item: BlogUserEntity) => {
+      const user = fillDto(UserRdo, item.toPOJO());
+      result[item.id] = user;
+    })
+
+    return result;
+  }
+
+  @ApiResponse({
+    type: UserRdo,
+    status: HttpStatus.OK,
+    description: 'User found',
   })
   @UseGuards(JwtAuthGuard)
   @Get(':id')
@@ -69,5 +111,28 @@ export class AuthenticationController {
     const existUser = await this.authService.getUser(id);
 
     return fillDto(UserRdo, existUser.toPOJO());
+  }
+
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Update an access/refresh tokens',
+  })
+  @UseGuards(JwtRefreshGuard)
+  @HttpCode(HttpStatus.OK)
+  @Post('refresh')
+  public async refreshToken(
+    @Req()
+    { user }: RequestWithUser,
+  ) {
+    return this.authService.createUserToken(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('check')
+  public async checkToken(
+    @Req()
+    { user: payload }: RequestWithTokenPayload,
+  ) {
+    return payload;
   }
 }

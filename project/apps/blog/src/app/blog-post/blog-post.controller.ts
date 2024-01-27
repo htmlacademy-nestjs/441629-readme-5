@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 import { BlogPostService } from './blog-post.service';
 import { fillDto } from '@project/shared/helpers';
 import { BlogPostRdo } from './rdo/blog-post.rdo';
@@ -6,7 +6,13 @@ import { BlogPostQuery } from './query/blog-post.query';
 import { BlogPostWithPaginationRdo } from './rdo/blog-post-with-pagination.rdo';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { PostValidateInterceptor } from './interceptors/post-validate.interceptor';
+import { ToggleLikeDto } from './dto/toggle-like.dto';
+import { UserIdDto } from './dto/user-id.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { BlogPostMoreRdo } from './rdo/blog-post-more.rdo';
 
+@ApiTags('Blog post service')
 @Controller('posts')
 export class BlogPostController {
   constructor(
@@ -21,12 +27,13 @@ export class BlogPostController {
     const postsWithPagination = await this.blogPostService.getAllPosts(query);
     const result = {
       ...postsWithPagination,
-      entities: postsWithPagination.entities.map(post => post.toPOJO()),
+      entities: postsWithPagination.entities.map(post => fillDto(BlogPostRdo, post.toPOJO())),
     }
 
     return fillDto(BlogPostWithPaginationRdo, result);
   }
 
+  @UseInterceptors(PostValidateInterceptor)
   @Post('/')
   public async create(
     @Body()
@@ -37,6 +44,18 @@ export class BlogPostController {
     return fillDto(BlogPostRdo, newPost.toPOJO());
   }
 
+  @Post('/repost/:id')
+  public async repost(
+    @Param('id')
+    id: string,
+
+    @Body()
+    { userId }: UserIdDto,
+  ) {
+    console.log(id, userId)
+    return fillDto(BlogPostRdo, await this.blogPostService.repostPost(id, userId));
+  }
+
   @Get('/:id')
   public async show(
     @Param('id')
@@ -44,7 +63,7 @@ export class BlogPostController {
   ) {
     const post = await this.blogPostService.getPost(id);
 
-    return fillDto(BlogPostRdo, post.toPOJO());
+    return fillDto(BlogPostMoreRdo, post.toPOJO());
   }
 
   @Delete('/:id')
@@ -52,8 +71,11 @@ export class BlogPostController {
   public async destroy(
     @Param('id')
     id: string,
+
+    @Body()
+    { userId }: UserIdDto,
   ) {
-    await this.blogPostService.deletePost(id);
+    await this.blogPostService.deletePost(id, userId);
   }
 
   @Patch('/:id')
@@ -64,7 +86,33 @@ export class BlogPostController {
     @Body()
     dto: UpdatePostDto,
   ) {
-    const updatedPost = await this.blogPostService.updatePost(id, dto);
+    const updatedPost = await this.blogPostService.updatePost(id, dto, dto.userId);
+
+    return fillDto(BlogPostRdo, updatedPost.toPOJO());
+  }
+
+  @Patch('/status/:id')
+  public async updateStatus(
+    @Param('id')
+    id: string,
+
+    @Body()
+    { userId }: UserIdDto,
+  ) {
+    const updatedPost = await this.blogPostService.updatePostStatus(id, userId);
+
+    return fillDto(BlogPostRdo, updatedPost.toPOJO());
+  }
+
+  @Patch('/like/:id')
+  public async like(
+    @Param('id')
+    id: string,
+
+    @Body()
+    { likeId }: ToggleLikeDto,
+  ) {
+    const updatedPost = await this.blogPostService.toggleLike(id, likeId);
 
     return fillDto(BlogPostRdo, updatedPost.toPOJO());
   }

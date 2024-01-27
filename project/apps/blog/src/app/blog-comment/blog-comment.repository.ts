@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { BasePostgresRepository } from '@project/shared/core';
 import { BlogCommentEntity } from './blog-comment.entity';
-import { IComment } from '@project/shared/app/types';
+import { IComment, IPagination } from '@project/shared/app/types';
 import { PrismaClientService } from '@project/shared/blog/models';
-import { COMMENTS_PER_PAGE } from './blog-comment.constant';
+import { COMMENT } from './blog-comment.constant';
+import { BlogCommentQuery } from './query/blog-comment.query';
 
 @Injectable()
 export class BlogCommentRepository extends BasePostgresRepository<BlogCommentEntity, IComment> {
@@ -31,8 +32,7 @@ export class BlogCommentRepository extends BasePostgresRepository<BlogCommentEnt
     const record = await this.client.comment.findFirst({
       where: {
         id,
-      },
-      take: COMMENTS_PER_PAGE,
+      }
     });
 
     if (!record) {
@@ -42,13 +42,39 @@ export class BlogCommentRepository extends BasePostgresRepository<BlogCommentEnt
     return this.createEntityFromDocument(record);
   }
 
-  public async findByPostId(postId: string): Promise<BlogCommentEntity[]> {
-    const records = await this.client.comment.findMany({
+  public async findByPostId(postId: string, query?: BlogCommentQuery): Promise<IPagination<BlogCommentEntity>> {
+    const skip = query?.page && query?.limit ? (query.page - 1) * query.limit : undefined;
+    const take = query?.limit;
+
+    const [records, count] = await Promise.all([
+      this.client.comment.findMany({
+        where: {
+          postId,
+        },
+        skip,
+        take,
+      }),
+      this.client.comment.count({
+        where: {
+          postId,
+        }
+      }),
+    ]);
+
+    return {
+      entities: records.map(record => this.createEntityFromDocument(record)),
+      currentPage: query?.page,
+      totalPages: Math.ceil(count / take),
+      itemsPerPage: take,
+      totalItems: count,
+    }
+  }
+
+  public async deleteById(id: string): Promise<void> {
+    await this.client.comment.delete({
       where: {
-        postId,
+        id,
       }
     });
-
-    return records.map(record => this.createEntityFromDocument(record));
   }
 }

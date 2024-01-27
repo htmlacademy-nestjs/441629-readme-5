@@ -26,6 +26,16 @@ export abstract class BaseMongoRepository<
     return this.createEntityFromDocument(document);
   }
 
+  public async findManyById(ids: EntityType['id'][]): Promise<EntityType[] | []> {
+    const documents = await this.model.find({
+      _id: {
+        $in: ids,
+      }
+    })
+
+    return documents.map(item => this.createEntityFromDocument(item));
+  }
+
   public async save(entity: EntityType): Promise<EntityType> {
     const newEntity = new this.model(entity.toPOJO());
     await newEntity.save();

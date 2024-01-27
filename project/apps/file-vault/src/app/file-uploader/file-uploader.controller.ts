@@ -6,7 +6,9 @@ import { FileUploaderService } from './file-uploader.service';
 import { fillDto } from '@project/shared/helpers';
 import { UploadedFileRdo } from './rdo/uploaded-file.rdo';
 import { MongoIdValidationPipe } from '@project/shared/core';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('File Uploader routes')
 @Controller('files')
 export class FileUploaderController {
   constructor(

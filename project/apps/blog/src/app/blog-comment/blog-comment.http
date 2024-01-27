@@ -1,14 +1,24 @@
 # Get all comments for post
-GET http://localhost:3000/api/posts/79cc980c-3e48-4598-8607-0a29f0a837cf/comments HTTP/1.1
+GET http://localhost:3030/api/posts/ae73a1ab-34fc-4290-a9e4-676beead191f/comments?limit=1&page=1 HTTP/1.1
 
 ###
 
 # Create a new comment for post
-POST http://localhost:3000/api/posts/a781c089-8465-413a-989a-1a9e84107516/comments HTTP/1.1
+POST http://localhost:3030/api/posts/7e887c7f-1d9f-459a-ba81-c3e111d24bf5/comments HTTP/1.1
 Content-Type: application/json
 
 {
-  "message": "New comment",
+  "message": "Test comment for blogPostService",
+  "userId": "658170cbb954e9f5b905ccf4"
+}
+
+###
+
+# Delete comment
+DELETE http://localhost:3030/api/posts/c4313d9c-af77-4b6a-99a5-b7a969327021/comments HTTP/1.1
+Content-Type: application/json
+
+{
   "userId": "658170cbb954e9f5b905ccf4"
 }
 

@@ -1,6 +1,7 @@
 import { IComment, ITag } from '@project/shared/app/types';
-import { Expose, Type } from 'class-transformer';
+import { Exclude, Expose, Type } from 'class-transformer';
 import { TagRdo } from '../../blog-tag/rdo/tag.rdo';
+import { BlogCommentRdo } from '../../blog-comment/rdo/blog-comment.rdo';
 
 export class BlogPostRdo {
   @Expose()
@@ -33,16 +34,26 @@ export class BlogPostRdo {
   @Expose()
   userId: string;
 
-  @Expose()
+  @Exclude()
   createdAt: string;
 
-  @Expose()
+  @Exclude()
   updatedAt: string;
 
   @Expose()
+  likes: string[];
+
+  @Exclude()
+  isPublished: boolean;
+
+  @Expose()
+  isRepost: boolean;
+
+  @Expose()
+  @Type(() => BlogCommentRdo)
   comments: IComment[];
 
   @Expose()
   @Type(() => TagRdo)
-  tags: TagRdo[];
+  tags: ITag[];
 }

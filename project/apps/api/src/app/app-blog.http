@@ -1,0 +1,118 @@
+# Get all posts
+
+GET http://localhost:4000/api/blog HTTP/1.1
+
+###
+
+
+# Get post by ID
+
+GET http://localhost:4000/api/blog/c0d1c3ab-c076-4df6-8b4e-847198400e98 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NWIyOWM0NmY0ZmI5NzA0NWQxYjJlY2IiLCJlbWFpbCI6Im5ld3Vpc2VyQGVtYWlsLnRlc3QiLCJuYW1lIjoiVXNlciBOYW1lIiwiaWF0IjoxNzA2MjA0MjU0LCJleHAiOjE3MDYyOTA2NTR9.ibqfdyGTHNHoNEeloAaKA6mlXs6z_WrFEKdShjFu1Wg
+
+###
+
+
+# Repost some post by ID
+
+POST http://localhost:4000/api/blog/repost/c0d1c3ab-c076-4df6-8b4e-847198400e98 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NWIyOWM0NmY0ZmI5NzA0NWQxYjJlY2IiLCJlbWFpbCI6Im5ld3Vpc2VyQGVtYWlsLnRlc3QiLCJuYW1lIjoiVXNlciBOYW1lIiwiaWF0IjoxNzA2MjA0MjU0LCJleHAiOjE3MDYyOTA2NTR9.ibqfdyGTHNHoNEeloAaKA6mlXs6z_WrFEKdShjFu1Wg
+
+###
+
+
+# Get posts by userId
+
+GET http://localhost:4000/api/blog?sortDirection=desc&userId=6580462f5e238357ab17003a HTTP/1.1
+
+###
+
+
+# Get posts by tags
+
+GET http://localhost:4000/api/blog?sortDirection=desc&tags[]=d1acb8e6-9d55-41a9-ad72-f1952f87c9d2 HTTP/1.1
+
+###
+
+
+# Get posts with sort by likes count
+
+GET http://localhost:4000/api/blog?sortDirection=desc&sortType=likes HTTP/1.1
+
+###
+
+
+# Create a new post
+
+POST http://localhost:4000/api/blog HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NWIyOWM0NmY0ZmI5NzA0NWQxYjJlY2IiLCJlbWFpbCI6Im5ld3Vpc2VyQGVtYWlsLnRlc3QiLCJuYW1lIjoiVXNlciBOYW1lIiwiaWF0IjoxNzA2MjA0MjU0LCJleHAiOjE3MDYyOTA2NTR9.ibqfdyGTHNHoNEeloAaKA6mlXs6z_WrFEKdShjFu1Wg
+Content-Type: application/json
+
+{
+  "postType": "quote",
+  "text": "Проверка сервиса API",
+  "author": "Какой-то автор",
+  "tags": ["ad48ef46-6ea6-41c4-a19f-e66b82bdf855"]
+}
+
+###
+
+
+# Create a new TEXT post
+
+POST http://localhost:4000/api/blog HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NWFkMWE5NzA5ZDE0ZjQ2NDE0MmE0YmUiLCJlbWFpbCI6Im5vdGlmeUBlbWFpbC50ZXN0IiwibmFtZSI6Ik5vdGlmeSBOYW1lIiwiaWF0IjoxNzA2MzU5MTUzLCJleHAiOjE3MDY0NDU1NTN9.j7bLdWThYSdCzTu8Jl4YZ2Er2f1KryckBZvYBgx8INU
+Content-Type: application/json
+
+{
+  "postType": "text",
+  "title": "Тестовый пост для проверки API",
+  "preview": "Краткое содержание текста для проверки создания поста из API",
+  "text": "Полная версия поста текста, должна содержать в себе более ста символов чтобы проходить проверку и быть опубликованным",
+  "userId": "65ad1a9709d14f464142a4be",
+  "tags": ["d1acb8e6-9d55-41a9-ad72-f1952f87c9d2"]
+}
+
+###
+
+
+# Update post by id
+
+PATCH http://localhost:4000/api/blog/6261524a-1df4-4cf7-b802-9dc3b19b5281 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTgwNDYyZjVlMjM4MzU3YWIxNzAwM2EiLCJlbWFpbCI6InVzZXJAZW1haWwudGVzdCIsIm5hbWUiOiJUZXN0IE5hbWUiLCJpYXQiOjE3MDYzNzE0MjAsImV4cCI6MTcwNjQ1NzgyMH0.QqL9baCbcV3HvAl2kHJa-UU_MEekdVVzVnsz8IRMwfA
+Content-Type: application/json
+
+{
+  "author": "Самый новый автор цитаты"
+}
+
+###
+
+
+# Update status post
+
+PATCH http://localhost:4000/api/blog/status/ae73a1ab-34fc-4290-a9e4-676beead191f HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NWIyOWM0NmY0ZmI5NzA0NWQxYjJlY2IiLCJlbWFpbCI6Im5ld3Vpc2VyQGVtYWlsLnRlc3QiLCJuYW1lIjoiVXNlciBOYW1lIiwiaWF0IjoxNzA2MzQ3MzY1LCJleHAiOjE3MDY0MzM3NjV9.MfDLUEgPPbLZ2V56Fat7aOYoCkl4kAcwcqSUDyJo7Lk
+
+###
+
+
+# Delete post by ID
+
+DELETE http://localhost:4000/api/blog/c0d1c3ab-c076-4df6-8b4e-847198400e98 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NWIyOWM0NmY0ZmI5NzA0NWQxYjJlY2IiLCJlbWFpbCI6Im5ld3Vpc2VyQGVtYWlsLnRlc3QiLCJuYW1lIjoiVXNlciBOYW1lIiwiaWF0IjoxNzA2MjA0MjU0LCJleHAiOjE3MDYyOTA2NTR9.ibqfdyGTHNHoNEeloAaKA6mlXs6z_WrFEKdShjFu1Wg
+
+###
+
+
+# Toggle like for post
+
+PATCH http://localhost:4000/api/blog/like/c0d1c3ab-c076-4df6-8b4e-847198400e98 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NWIyOWM0NmY0ZmI5NzA0NWQxYjJlY2IiLCJlbWFpbCI6Im5ld3Vpc2VyQGVtYWlsLnRlc3QiLCJuYW1lIjoiVXNlciBOYW1lIiwiaWF0IjoxNzA2MjA0MjU0LCJleHAiOjE3MDYyOTA2NTR9.ibqfdyGTHNHoNEeloAaKA6mlXs6z_WrFEKdShjFu1Wg
+Content-Type: application/json
+
+{
+  "likeId": "658170cbb954e9f5b905ccf4"
+}
+
+###
