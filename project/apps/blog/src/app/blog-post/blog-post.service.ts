@@ -20,6 +20,10 @@ export class BlogPostService {
     return this.blogPostRepository.find(query);
   }
 
+  public async searchPosts(str: string): Promise<BlogPostEntity[]> {
+    return this.blogPostRepository.search(str);
+  }
+
   public async createPost(dto: CreatePostDto): Promise<BlogPostEntity> {
     const tags = await this.blogTagService.getTagsByIds(dto.tags);
     const newPost = BlogPostEntity.fromDto(dto, tags, []);

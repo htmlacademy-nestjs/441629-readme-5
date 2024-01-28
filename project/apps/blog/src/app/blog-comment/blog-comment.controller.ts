@@ -1,12 +1,14 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Query } from '@nestjs/common';
-import { BlogCommentService } from './blog-comment.service';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
+
 import { fillDto } from '@project/shared/helpers';
+
+import { BlogCommentService } from './blog-comment.service';
 import { BlogCommentRdo } from './rdo/blog-comment.rdo';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { DeleteCommentDto } from './dto/delete-comment.dto';
 import { BlogCommentQuery } from './query/blog-comment.query';
 import { BlogCommentWithPaginationRdo } from './query/blog-comment-with-pagination.rdo';
-import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Blog comment service')
 @Controller('posts/:id/comments')
@@ -15,6 +17,10 @@ export class BlogCommentController {
     private readonly blogCommentService: BlogCommentService,
   ) { }
 
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Show comments for post',
+  })
   @Get('/')
   public async show(
     @Param('id')
@@ -32,6 +38,10 @@ export class BlogCommentController {
     return fillDto(BlogCommentWithPaginationRdo, result);
   }
 
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Create a new comment for post',
+  })
   @Post('/')
   public async create(
     @Param('id')
@@ -45,6 +55,10 @@ export class BlogCommentController {
     return fillDto(BlogCommentRdo, newComment.toPOJO());
   }
 
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'Delete comment by ID',
+  })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('/')
   public async delete(

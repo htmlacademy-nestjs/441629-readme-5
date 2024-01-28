@@ -12,39 +12,81 @@ _`.editorconfig`, `.gitattributes`, `.gitignore`._
 
 ## Памятка
 
-### 1. Зарегистрируйтесь на Гитхабе
-
-
-Если у вас ещё нет аккаунта на [github.com](https://github.com/join), скорее зарегистрируйтесь.
-
-### 2. Создайте форк
-
-Откройте репозиторий и нажмите кнопку «Fork» в правом верхнем углу. Репозиторий из Академии будет скопирован в ваш аккаунт.
-
-<img width="769" alt="Press 'Fork'" src="https://cloud.githubusercontent.com/assets/259739/20264045/a1ddbf40-aa7a-11e6-9a1a-724a1c0123c8.png">
-
-Получится вот так:
-
-<img width="769" alt="Forked" src="https://cloud.githubusercontent.com/assets/259739/20264122/f63219a6-aa7a-11e6-945a-89818fc7c014.png">
-
-### 3. Клонируйте репозиторий на свой компьютер
-
-Будьте внимательны: нужно клонировать свой репозиторий (форк), а не репозиторий Академии. Также обратите внимание, что клонировать репозиторий нужно через SSH, а не через HTTPS. Нажмите зелёную кнопку в правой части экрана, чтобы скопировать SSH-адрес вашего репозитория:
-
-<img width="769" alt="SSH" src="https://cloud.githubusercontent.com/assets/259739/20264180/42704126-aa7b-11e6-9ab4-73372b812a53.png">
-
-Клонировать репозиторий можно так:
+### 1. Установите все пакеты, находясь в директории project
 
 ```
-git clone SSH-адрес_вашего_форка
+cd project
+npm i
 ```
 
-Команда клонирует репозиторий на ваш компьютер и подготовит всё необходимое для старта работы.
+### 2. Создайте .env файлы (скопируйте из .env-example) для каждого из приложений: users, blog, file-vault, notify, api
 
-### 4. Начинайте обучение!
+### 3. Создайте docker контейнеры для каждого из приложений
 
----
+```
+docker-compose \
+--file ./apps/[users|blog|file-vault|notify]/docker-compose.dev.yml \
+--env-file ./apps/[users|blog|file-vault|notify]/.env \
+--project-name "readme-[users|blog|file-vault|notify]" \
+up -d
+```
 
-<a href="https://htmlacademy.ru/profession/fullstack"><img align="left" width="50" height="50" title="HTML Academy" src="https://up.htmlacademy.ru/static/img/intensive/nodejs/logo-for-github-2.png"></a>
+### 4. Смигрируйте модель для prisma ORM
 
-Репозиторий создан для обучения на профессиональном онлайн‑курсе «[Node.js. Проектирование веб-сервисов](https://htmlacademy.ru/profession/fullstack)» от [HTML Academy](https://htmlacademy.ru).
+```
+npx prisma migrate dev \                                                 
+--name "Migrate models for project" \
+--schema ./libs/shared/blog/models/prisma/schema.prisma \
+--skip-generate
+```
+
+### 5. Произведите генерацию и сидирование базы (при необходимости)
+
+```
+nx run blog:db:generate
+nx run blog:db:seed
+```
+
+### 6. Произведите форматирование prisma-cli
+
+```
+npx prisma format --schema ./libs/shared/blog/models/prisma/schema.prisma
+```
+
+### 7. Запустите все приложения
+
+```
+nx serve notify
+nx serve users
+nx serve file-vault
+nx serve blog
+nx serve api
+```
+
+## 7.1 API будет доступно по адресу:
+
+```
+http://localhost:4000/api
+```
+
+## 7.2 Отдельные приложения:
+
+# Users
+```
+http://localhost:3000/api
+```
+
+# Notify
+```
+http://localhost:3010/api
+```
+
+# File-vault
+```
+http://localhost:3020/api
+```
+
+# Blog
+```
+http://localhost:3030/api
+```

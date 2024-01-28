@@ -11,6 +11,7 @@ import { ToggleLikeDto } from './dto/toggle-like.dto';
 import { UserIdDto } from './dto/user-id.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { BlogPostMoreRdo } from './rdo/blog-post-more.rdo';
+import { BlogPostSeachQuery } from './query/blog-post-search.query';
 
 @ApiTags('Blog post service')
 @Controller('posts')
@@ -31,6 +32,16 @@ export class BlogPostController {
     }
 
     return fillDto(BlogPostWithPaginationRdo, result);
+  }
+
+  @Get('/search')
+  public async search(
+    @Query()
+    query: BlogPostSeachQuery,
+  ) {
+    const result = await this.blogPostService.searchPosts(query.substring);
+
+    return fillDto(BlogPostRdo, result);
   }
 
   @UseInterceptors(PostValidateInterceptor)

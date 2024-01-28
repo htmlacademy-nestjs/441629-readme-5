@@ -2,6 +2,7 @@ import { SortDirectionEnum } from '@project/shared/app/types';
 
 export const POST = {
   COUNT_LIMIT: 25,
+  SEARCH_LIMIT: 20,
   SORT_DIRECTION: SortDirectionEnum.Desc,
   PAGE_COUNT: 1,
 }
@@ -36,5 +37,19 @@ export const POST_FIELD_INFO = {
   POST_TYPE_DESCRIPTION: 'Post type one of: video, text, quote, photo, link.',
   POST_TYPE_EXAMPLE: 'quote',
   POST_TITLE_DESCRIPTION: 'Title of some post with length from 20 to 50',
-  POST_TITLE_EXAMPLE: 'Some post title'
+  POST_TITLE_EXAMPLE: 'Some post title',
+  POST_LINK_DESCRIPTION: 'Some url',
+  POST_LINK_EXAMPLE: 'https://url.domain/source.html',
+  POST_PREVIEW_DESCRIPTION: 'Short text as preview of full info',
+  POST_PREVIEW_EXAMPLE: 'Little text',
+  POST_TEXT_DESCRIPTION: 'Full text of post',
+  POST_TEXT_EXAMPLE: 'Full post text with some infomation',
+  POST_AUTHOR_DESCRIPTION: 'Author of some data for post',
+  POST_AUTHOR_EXAMPLE: 'Alexandr Pushkin',
+  POST_PHOTO_DESCRIPTION: 'Some photo for photo post',
+  POST_PHOTO_EXAMPLE: '/usr/local/item.png',
+  POST_DESCRIPTION_DESCRIPTION: 'Description about post',
+  POST_DESCRIPTION_EXAMPLE: 'Alexandr Pushkin',
+  POST_TAGS_DESCRIPTION: 'IDs of tags',
+  POST_TAGS_EXAMPLE: 'aaa-aaa-aaa',
 }

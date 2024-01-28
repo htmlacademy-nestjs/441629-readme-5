@@ -4,6 +4,14 @@ GET http://localhost:3030/api/posts HTTP/1.1
 
 ###
 
+
+# Get posts by search in title
+
+GET http://localhost:3030/api/posts/search?substring=тест HTTP/1.1
+
+###
+
+
 # Get posts with filter
 
 GET http://localhost:3030/api/posts?tags[]=ad48ef46-6ea6-41c4-a19f-e66b82bdf855&limit=5&sortDirection=asc&page=1 HTTP/1.1

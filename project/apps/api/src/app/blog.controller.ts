@@ -7,6 +7,7 @@ import { AddNewPostDto } from './dto/blog/add-new-post.dto';
 import { ApplicationServiceURL } from './app.config';
 import { UpdatePostDto } from './dto/blog/update-post.dto';
 import { CreateCommentDto } from './dto/blog/create-comment.dto';
+import { SeachPostsDto } from './dto/blog/search-post.dto';
 import { UserIdDto } from './dto/user-id.dto';
 import { createQuery } from './utils/create-query.util';
 import { ApiQueryOptions, ApiTags } from '@nestjs/swagger';
@@ -53,6 +54,20 @@ export class BlogController {
     }
   }
 
+  @Get('/search')
+  public async search(
+    @Query()
+    query: SeachPostsDto,
+  ) {
+    try {
+      const { data } = await this.httpService.axiosRef.get(`${ApplicationServiceURL.Blog}/search?${query.substring}`);
+
+      return data;
+    } catch ({ response }) {
+      throw new HttpException(response?.data?.message, response?.data?.statusCode);
+    }
+  }
+
   @UseGuards(CheckAuthGuard)
   @UseInterceptors(UserIdInterceptor)
   @Get('/:id')
@@ -84,6 +99,10 @@ export class BlogController {
     dto: AddNewPostDto,
   ) {
     try {
+      const tagsRes = await this.httpService.axiosRef.post(`${ApplicationServiceURL.Tags}/`, { titles: dto.tags });
+
+      dto.tags = tagsRes.data.map(item => item.id);
+
       const { data } = await this.httpService.axiosRef.post(`${ApplicationServiceURL.Blog}/`, dto);
 
       return data;
