@@ -12,11 +12,11 @@ GET http://localhost:4000/api/tags/ad48ef46-6ea6-41c4-a19f-e66b82bdf855 HTTP/1.1
 # Create a new tag
 
 POST http://localhost:4000/api/tags HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NWIyOWM0NmY0ZmI5NzA0NWQxYjJlY2IiLCJlbWFpbCI6Im5ld3Vpc2VyQGVtYWlsLnRlc3QiLCJuYW1lIjoiVXNlciBOYW1lIiwiaWF0IjoxNzA2MzQ3MzY1LCJleHAiOjE3MDY0MzM3NjV9.MfDLUEgPPbLZ2V56Fat7aOYoCkl4kAcwcqSUDyJo7Lk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTgwNDYyZjVlMjM4MzU3YWIxNzAwM2EiLCJlbWFpbCI6InVzZXJAZW1haWwudGVzdCIsIm5hbWUiOiJUZXN0IE5hbWUiLCJpYXQiOjE3MDY0Mzg0NTUsImV4cCI6MTcwNjUyNDg1NX0.t83rV91H1AMWCaRQXDgOWuEQbe0CCptmzdXXvDIEbSk
 Content-Type: application/json
 
 {
-  "title": "newyear"
+  "titles": [ "newyear", "oldyear", "christmas" ]
 }
 
 ###

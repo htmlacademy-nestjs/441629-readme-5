@@ -127,6 +127,10 @@ export class AuthenticationController {
     return this.authService.createUserToken(user);
   }
 
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Check jwt token',
+  })
   @UseGuards(JwtAuthGuard)
   @Post('check')
   public async checkToken(

@@ -18,18 +18,10 @@ export class BlogTagService {
     return await this.blogTagRepository.find();
   }
 
-  public async createTag(dto: CreateTagDto): Promise<BlogTagEntity> {
-    const existsTag = (await this.blogTagRepository.find({ title: dto.title })).at(0);
+  public async createTags(dto: { titles: string[] }): Promise<BlogTagEntity[]> {
+    const tags = await this.blogTagRepository.createMany(dto)
 
-    if (existsTag) {
-      throw new ConflictException('A tag with the title already exists');
-    }
-
-    const newTag = new BlogTagEntity(dto);
-
-    await this.blogTagRepository.save(newTag);
-
-    return newTag;
+    return tags;
   }
 
   public async deleteTag(id: string): Promise<void> {

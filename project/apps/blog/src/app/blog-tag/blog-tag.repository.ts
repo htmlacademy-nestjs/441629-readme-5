@@ -4,7 +4,8 @@ import { PrismaClientService } from '@project/shared/blog/models';
 import { ITag } from '@project/shared/app/types';
 import { BlogTagEntity } from './blog-tag.entity';
 import { ITagFilter, tagFilterToPrismaFilter } from './blog-tag.filter';
-import { MAX_TAG_LIMIT } from './blog-tag.constant';
+import { TAG_DEFAULT } from './blog-tag.constant';
+import { CreateTagDto } from './dto/create-tag.dto';
 
 @Injectable()
 export class BlogTagRepository extends BasePostgresRepository<BlogTagEntity, ITag> {
@@ -12,15 +13,6 @@ export class BlogTagRepository extends BasePostgresRepository<BlogTagEntity, ITa
     protected readonly client: PrismaClientService,
   ) {
     super(client, BlogTagEntity.fromObject);
-  }
-
-  public async save(entity: BlogTagEntity): Promise<BlogTagEntity> {
-    const record = await this.client.tag.create({
-      data: { ...entity.toPOJO() }
-    });
-
-    entity.id = record.id;
-    return entity;
   }
 
   public async findById(id: string): Promise<BlogTagEntity> {
@@ -42,10 +34,31 @@ export class BlogTagRepository extends BasePostgresRepository<BlogTagEntity, ITa
 
     const documents = await this.client.tag.findMany({
       where,
-      take: MAX_TAG_LIMIT,
+      take: TAG_DEFAULT.LIMIT,
     });
 
     return documents.map(document => this.createEntityFromDocument(document));
+  }
+
+  public async findMany(titles: string[]): Promise<BlogTagEntity[]> {
+    const documents = await this.client.tag.findMany({
+      where: {
+        title: {
+          in: titles,
+        }
+      }
+    });
+
+    return documents.map(document => this.createEntityFromDocument(document));
+  }
+
+  public async createMany(dto: CreateTagDto): Promise<BlogTagEntity[]> {
+    await this.client.tag.createMany({
+      data: dto.titles.map(title => ({ title })),
+      skipDuplicates: true,
+    });
+
+    return await this.findMany(dto.titles);
   }
 
   public async deleteById(id: string): Promise<void> {

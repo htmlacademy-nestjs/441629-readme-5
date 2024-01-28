@@ -46,7 +46,7 @@ model Post {
 
 model Tag {
   id    String @id @default(uuid()) @map("tag_id")
-  title String
+  title String @unique()
   posts Post[]
 
   @@map("tags")

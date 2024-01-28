@@ -38,16 +38,16 @@ export class BlogTagController {
 
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: 'Create tag',
+    description: 'Create list of tags',
   })
   @Post('/')
   public async create(
     @Body()
-    dto: CreateTagDto
+    dto: CreateTagDto,
   ) {
-    const newTag = await this.blogTagService.createTag(dto);
+    const tagsList = await this.blogTagService.createTags(dto);
 
-    return fillDto(TagRdo, newTag.toPOJO());
+    return tagsList.map(tag => tag.toPOJO());
   }
 
   @Delete('/:id')

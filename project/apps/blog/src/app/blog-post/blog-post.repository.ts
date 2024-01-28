@@ -5,6 +5,7 @@ import { IPagination, IPost, SortDirectionEnum, SortEnum } from '@project/shared
 import { PrismaClientService } from '@project/shared/blog/models';
 import { Prisma } from '@prisma/client';
 import { BlogPostQuery } from './query/blog-post.query';
+import { POST } from './blog-post.constant';
 
 @Injectable()
 export class BlogPostRepository extends BasePostgresRepository<BlogPostEntity, IPost> {
@@ -150,6 +151,24 @@ export class BlogPostRepository extends BasePostgresRepository<BlogPostEntity, I
     });
 
     return this.createEntityFromDocument(updatedPost);
+  }
+
+  public async search(str: string): Promise<BlogPostEntity[]> {
+    const records = await this.client.post.findMany({
+      where: {
+        title: {
+          contains: str,
+          mode: 'insensitive',
+        },
+      },
+      take: POST.SEARCH_LIMIT,
+      include: {
+        tags: true,
+        comments: true,
+      }
+    });
+
+    return records.map(record => this.createEntityFromDocument(record))
   }
 
   public async find(query?: BlogPostQuery): Promise<IPagination<BlogPostEntity>> {
