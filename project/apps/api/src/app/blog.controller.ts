@@ -25,7 +25,6 @@ export class BlogController {
     @Query()
     query: ApiQueryOptions,
   ) {
-    console.log(query)
     try {
       const { data } = await this.httpService.axiosRef.get(`${ApplicationServiceURL.Blog}/${createQuery(query)}`);
 
@@ -159,7 +158,6 @@ export class BlogController {
     @Body()
     dto: UserIdDto,
   ) {
-    console.log(dto)
     try {
       const res = await this.httpService.axiosRef.patch(`${ApplicationServiceURL.Blog}/status/${id}`, dto);
 

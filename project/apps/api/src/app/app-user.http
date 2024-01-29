@@ -12,6 +12,22 @@ Content-Type: application/json
 ###
 
 
+# Add avatar to user
+
+POST http://localhost:4000/api/users/avatar HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTgwNDYyZjVlMjM4MzU3YWIxNzAwM2EiLCJlbWFpbCI6InVzZXJAZW1haWwudGVzdCIsIm5hbWUiOiJUZXN0IE5hbWUiLCJpYXQiOjE3MDY1MjI0MjgsImV4cCI6MTcwNjYwODgyOH0.elEA_eRai5A-QHs4O2YIpHRBsLJlns22NAeFbBD8f-Y
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="avatar.jpg"
+
+< ./avatar.jpg
+
+--boundary--
+
+###
+
+
 # Create a new user by authorized user (1.1)
 
 POST http://localhost:4000/api/users/register HTTP/1.1
@@ -19,7 +35,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NWIyOWM0N
 Content-Type: application/json
 
 {
-  "email": "testuser@email.test",
+  "email": "user@email.test",
   "name": "Name Test",
   "password": "123456"
 }
@@ -44,6 +60,19 @@ Content-Type: application/json
 
 GET http://localhost:4000/api/users/6580462f5e238357ab17003a HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTgwNDYyZjVlMjM4MzU3YWIxNzAwM2EiLCJlbWFpbCI6InVzZXJAZW1haWwudGVzdCIsIm5hbWUiOiJUZXN0IE5hbWUiLCJpYXQiOjE3MDYxOTYwMTgsImV4cCI6MTcwNjI4MjQxOH0.Zxq0Rp_FuQBqUaf5OYiNysqKF46YS7srH7jLxTSQqBw
+
+###
+
+
+# Update user
+
+PATCH http://localhost:4000/api/users/update HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTgwNDYyZjVlMjM4MzU3YWIxNzAwM2EiLCJlbWFpbCI6InVzZXJAZW1haWwudGVzdCIsIm5hbWUiOiJUZXN0IE5hbWUiLCJpYXQiOjE3MDY1MjI0MjgsImV4cCI6MTcwNjYwODgyOH0.elEA_eRai5A-QHs4O2YIpHRBsLJlns22NAeFbBD8f-Y
+Content-Type: application/json
+
+{
+  "name": "Update Name"
+}
 
 ###
 

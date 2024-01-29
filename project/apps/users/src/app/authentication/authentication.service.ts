@@ -12,6 +12,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { createJWTPayload } from '@project/shared/helpers';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class AuthenticationService {
@@ -68,6 +69,19 @@ export class AuthenticationService {
 
     return this.blogUserRepository
       .update(userId, userEntity);
+  }
+
+  public async update(dto: UpdateUserDto) {
+    const existUser = await this.blogUserRepository.findById(dto.userId);
+
+    if (!existUser) {
+      throw new ConflictException(AUTH.USER_NOT_FOUND);
+    }
+
+    const userEntity = new BlogUserEntity({ ...existUser.toPOJO(), ...dto });
+
+    return this.blogUserRepository
+      .update(dto.userId, userEntity);
   }
 
   public async verifyUser(dto: LoginUserDto) {

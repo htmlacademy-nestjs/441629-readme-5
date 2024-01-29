@@ -63,7 +63,6 @@ export class BlogPostController {
     @Body()
     { userId }: UserIdDto,
   ) {
-    console.log(id, userId)
     return fillDto(BlogPostRdo, await this.blogPostService.repostPost(id, userId));
   }
 

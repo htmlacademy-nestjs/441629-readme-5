@@ -5,6 +5,7 @@ import { UsersController } from './users.controller';
 import { HTTP_CLIENT_MAX_REDIRECTS, HTTP_CLIENT_TIMEOUT } from './app.config';
 import { CheckAuthGuard } from './guards/check-auth.guard';
 import { TagsController } from './tags.controller';
+import { FileController } from './file.controller';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { TagsController } from './tags.controller';
     BlogController,
     UsersController,
     TagsController,
+    FileController,
   ],
   providers: [CheckAuthGuard],
 })

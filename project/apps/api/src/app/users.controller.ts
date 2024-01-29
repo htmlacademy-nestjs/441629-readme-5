@@ -1,5 +1,7 @@
-import { Body, Controller, Get, Param, Post, Req, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Param, Patch, Post, Req, UploadedFile, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import { ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'Express';
 import { LoginUserDto } from './dto/user/login-user.dto';
 import { ApplicationServiceURL } from './app.config';
@@ -9,7 +11,8 @@ import { UserIdInterceptor } from './interceptors/user-id.interceptor';
 import { CreateUserDto } from './dto/user/create-user.dto';
 import { CheckNewUserGuard } from './guards/check-not-auth.guard';
 import { ChangePasswordDto } from './dto/user/change-password.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { UpdateUserDto } from './dto/user/update-user.dto';
+import { UserIdDto } from './dto/user-id.dto';
 
 @ApiTags('Users routes')
 @Controller('users')
@@ -27,13 +30,17 @@ export class UsersController {
     @Req()
     request: Request,
   ) {
-    const { data } = await this.httpService.axiosRef.get(`${ApplicationServiceURL.Users}/${id}`, {
-      headers: {
-        'Authorization': request.headers['authorization'],
-      }
-    });
+    try {
+      const { data } = await this.httpService.axiosRef.get(`${ApplicationServiceURL.Users}/${id}`, {
+        headers: {
+          'Authorization': request.headers['authorization'],
+        }
+      });
 
-    return data;
+      return data;
+    } catch ({ response }) {
+      throw new HttpException(response?.data?.message, response?.data?.statusCode);
+    }
   }
 
   @UseGuards(CheckNewUserGuard)
@@ -42,9 +49,55 @@ export class UsersController {
     @Body()
     dto: CreateUserDto,
   ) {
-    const { data } = await this.httpService.axiosRef.post(`${ApplicationServiceURL.Users}/register`, dto);
+    try {
+      const { data } = await this.httpService.axiosRef.post(`${ApplicationServiceURL.Users}/register`, dto);
 
-    return data;
+      return data;
+    } catch ({ response }) {
+      throw new HttpException(response?.data?.message, response?.data?.statusCode);
+    }
+  }
+
+  @UseGuards(CheckAuthGuard)
+  @UseInterceptors(FileInterceptor('file'), UserIdInterceptor)
+  @Post('/avatar')
+  public async avatar(
+    @UploadedFile()
+    file: Express.Multer.File,
+
+    @Body()
+    dto: UserIdDto,
+  ) {
+    try {
+      const { data } = await this.httpService.axiosRef.post(`${ApplicationServiceURL.Files}/upload-info`, { ...file, buffer: file.buffer.toString('hex') });
+
+      const addAvatarDto = {
+        userId: dto.userId,
+        avatar: `${data.subDirectory}/${data.hashName}`,
+      };
+
+      const res = await this.httpService.axiosRef.patch(`${ApplicationServiceURL.Users}/update`, addAvatarDto);
+
+      return res.data;
+    } catch ({ response }) {
+      throw new HttpException(response?.data?.message, response?.data?.statusCode);
+    }
+  }
+
+  @UseGuards(CheckAuthGuard)
+  @UseInterceptors(UserIdInterceptor)
+  @Patch('update')
+  public async update(
+    @Body()
+    dto: UpdateUserDto,
+  ) {
+    try {
+      const { data } = await this.httpService.axiosRef.patch(`${ApplicationServiceURL.Users}/update`, dto);
+
+      return data;
+    } catch ({ response }) {
+      throw new HttpException(response?.data?.message, response?.data?.statusCode);
+    }
   }
 
   @Post('login')
@@ -52,9 +105,13 @@ export class UsersController {
     @Body()
     dto: LoginUserDto,
   ) {
-    const { data } = await this.httpService.axiosRef.post(`${ApplicationServiceURL.Users}/login`, dto);
+    try {
+      const { data } = await this.httpService.axiosRef.post(`${ApplicationServiceURL.Users}/login`, dto);
 
-    return data;
+      return data;
+    } catch (res) {
+      throw new HttpException(res.response?.data?.message, res.response?.data?.statusCode);
+    }
   }
 
   @UseGuards(CheckAuthGuard)
@@ -64,9 +121,13 @@ export class UsersController {
     @Body()
     dto: ChangePasswordDto
   ) {
-    const { data } = await this.httpService.axiosRef.post(`${ApplicationServiceURL.Users}/password`, dto);
+    try {
+      const { data } = await this.httpService.axiosRef.post(`${ApplicationServiceURL.Users}/password`, dto);
 
-    return data;
+      return data;
+    } catch ({ response }) {
+      throw new HttpException(response?.data?.message, response?.data?.statusCode);
+    }
   }
 
   @Post('refresh')
@@ -74,12 +135,16 @@ export class UsersController {
     @Req()
     req: Request,
   ) {
-    const { data } = await this.httpService.axiosRef.post(`${ApplicationServiceURL.Users}/refresh`, null, {
-      headers: {
-        'Authorization': req.headers['authorization'],
-      }
-    });
+    try {
+      const { data } = await this.httpService.axiosRef.post(`${ApplicationServiceURL.Users}/refresh`, null, {
+        headers: {
+          'Authorization': req.headers['authorization'],
+        }
+      });
 
-    return data
+      return data;
+    } catch ({ response }) {
+      throw new HttpException(response?.data?.message, response?.data?.statusCode);
+    }
   }
 }
