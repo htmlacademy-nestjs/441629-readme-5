@@ -28,6 +28,19 @@ Content-Type: application/json
 
 ###
 
+
+# Update user
+PATCH http://localhost:3000/api/auth/update HTTP/1.1
+Content-Type: application/json
+
+{
+  "avatar": "/path/to/avatar.png",
+  "userId": "6580462f5e238357ab17003a"
+}
+
+###
+
+
 # Update password
 POST http://localhost:3000/api/auth/password HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NTgwNDYyZjVlMjM4MzU3YWIxNzAwM2EiLCJlbWFpbCI6InVzZXJAZW1haWwudGVzdCIsIm5hbWUiOiJUZXN0IE5hbWUiLCJpYXQiOjE3MDYyNzcxMzYsImV4cCI6MTcwNjM2MzUzNn0.YI_tFaDOzhgpoVcdRjTwhfo-ZnsQbIOvbfU48rZ_sgk

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthenticationService } from './authentication.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -13,6 +13,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { RequestWithTokenPayload } from '@project/shared/app/types';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 interface RequestWithUser {
   user?: BlogUserEntity,
@@ -41,6 +42,20 @@ export class AuthenticationController {
     await this.notifyService.registerSubscriber({ email, name });
 
     return fillDto(UserRdo, newUser.toPOJO());
+  }
+
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Update user info.',
+  })
+  @Patch('update')
+  public async update(
+    @Body()
+    dto: UpdateUserDto,
+  ) {
+    const updatedUser = await this.authService.update(dto);
+
+    return fillDto(UserRdo, updatedUser.toPOJO());
   }
 
   @HttpCode(HttpStatus.ACCEPTED)
