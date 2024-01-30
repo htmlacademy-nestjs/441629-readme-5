@@ -9,9 +9,10 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { PostValidateInterceptor } from './interceptors/post-validate.interceptor';
 import { ToggleLikeDto } from './dto/toggle-like.dto';
 import { UserIdDto } from './dto/user-id.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BlogPostMoreRdo } from './rdo/blog-post-more.rdo';
 import { BlogPostSeachQuery } from './query/blog-post-search.query';
+import { API } from './blog-post.constant';
 
 @ApiTags('Blog post service')
 @Controller('posts')
@@ -20,6 +21,12 @@ export class BlogPostController {
     private readonly blogPostService: BlogPostService,
   ) { }
 
+  @ApiResponse({
+    type: BlogPostQuery,
+    status: HttpStatus.OK,
+    description: API.FOUNDED,
+  })
+  @HttpCode(HttpStatus.OK)
   @Get('/')
   public async index(
     @Query()
@@ -34,6 +41,11 @@ export class BlogPostController {
     return fillDto(BlogPostWithPaginationRdo, result);
   }
 
+  @ApiResponse({
+    type: BlogPostSeachQuery,
+    status: HttpStatus.OK,
+    description: API.SEARCH,
+  })
   @Get('/search')
   public async search(
     @Query()
@@ -44,6 +56,11 @@ export class BlogPostController {
     return fillDto(BlogPostRdo, result);
   }
 
+  @ApiResponse({
+    type: CreatePostDto,
+    status: HttpStatus.CREATED,
+    description: API.CREATED,
+  })
   @UseInterceptors(PostValidateInterceptor)
   @Post('/')
   public async create(
@@ -55,17 +72,26 @@ export class BlogPostController {
     return fillDto(BlogPostRdo, newPost.toPOJO());
   }
 
+  @ApiResponse({
+    type: CreatePostDto,
+    status: HttpStatus.CREATED,
+    description: API.REPOST,
+  })
   @Post('/repost/:id')
   public async repost(
     @Param('id')
     id: string,
 
     @Body()
-    { userId }: UserIdDto,
+    dto: UserIdDto,
   ) {
-    return fillDto(BlogPostRdo, await this.blogPostService.repostPost(id, userId));
+    return fillDto(BlogPostRdo, await this.blogPostService.repostPost(id, dto.userId));
   }
 
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: API.FOUNDED,
+  })
   @Get('/:id')
   public async show(
     @Param('id')
@@ -76,6 +102,10 @@ export class BlogPostController {
     return fillDto(BlogPostMoreRdo, post.toPOJO());
   }
 
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: API.DELETE,
+  })
   @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   public async destroy(
@@ -88,6 +118,11 @@ export class BlogPostController {
     await this.blogPostService.deletePost(id, userId);
   }
 
+  @ApiResponse({
+    type: UpdatePostDto,
+    status: HttpStatus.FOUND,
+    description: API.UPDATE,
+  })
   @Patch('/:id')
   public async update(
     @Param('id')
@@ -101,6 +136,11 @@ export class BlogPostController {
     return fillDto(BlogPostRdo, updatedPost.toPOJO());
   }
 
+  @ApiResponse({
+    type: UserIdDto,
+    status: HttpStatus.FOUND,
+    description: API.UPDATE,
+  })
   @Patch('/status/:id')
   public async updateStatus(
     @Param('id')
@@ -114,6 +154,11 @@ export class BlogPostController {
     return fillDto(BlogPostRdo, updatedPost.toPOJO());
   }
 
+  @ApiResponse({
+    type: ToggleLikeDto,
+    status: HttpStatus.FOUND,
+    description: API.LIKE,
+  })
   @Patch('/like/:id')
   public async like(
     @Param('id')

@@ -1,12 +1,12 @@
 import { IsNotEmpty, IsString, IsUrl, MaxLength } from 'class-validator';
 import { CreatePostDto } from './create-post.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { POST_ERROR_MESSAGES, POST_LENGTH_VALUES } from '../blog-post.constant';
+import { POST_ERROR_MESSAGES, POST_FIELD_INFO, POST_LENGTH_VALUES } from '../blog-post.constant';
 
 export class CreateLinkPostDto extends CreatePostDto {
   @ApiProperty({
-    description: 'URL of a link post',
-    example: '/partofurl/name.html',
+    description: POST_FIELD_INFO.LINK_DESCRIPTION,
+    example: POST_FIELD_INFO.LINK_EXAMPLE,
   })
   @IsNotEmpty()
   @IsUrl({}, {
@@ -15,7 +15,8 @@ export class CreateLinkPostDto extends CreatePostDto {
   public link: string;
 
   @ApiProperty({
-    description: 'Description of a link post'
+    description: POST_FIELD_INFO.DESCRIPTION_DESCRIPTION,
+    example: POST_FIELD_INFO.DESCRIPTION_EXAMPLE,
   })
   @IsNotEmpty()
   @IsString({

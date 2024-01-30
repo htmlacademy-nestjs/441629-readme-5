@@ -1,1 +1,3 @@
-export const EMAIL_ADD_SUBSCRIBER_SUBJECT = 'Subscription to the newsletter completed';
+export const EMAIL_SUBJECT = {
+  ADD_SUBSCRIBER: 'Subscription to the newsletter completed'
+}

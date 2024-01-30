@@ -5,7 +5,7 @@ import { FileUploaderService } from './file-uploader.service';
 import { fillDto } from '@project/shared/helpers';
 import { UploadedFileRdo } from './rdo/uploaded-file.rdo';
 import { MongoIdValidationPipe } from '@project/shared/core';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FILE_INFO, MAX_FILE_SIZE } from './file-uploader.constant';
 
 @ApiTags('File Uploader routes')
