@@ -1,5 +1,5 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthenticationService } from './authentication.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { fillDto } from '@project/shared/helpers';
@@ -14,12 +14,15 @@ import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { RequestWithTokenPayload } from '@project/shared/app/types';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AUTH } from './authentication.constant';
+import { LoginUserDto } from './dto/login-user.dto';
+import { UsersInfoDto } from './dto/users-info.dto';
 
 interface RequestWithUser {
   user?: BlogUserEntity,
 }
 
-@ApiTags('authentication')
+@ApiTags('Authentication')
 @Controller('auth')
 export class AuthenticationController {
   constructor(
@@ -28,8 +31,36 @@ export class AuthenticationController {
   ) { }
 
   @ApiResponse({
+    type: LoggedUserRdo,
+    status: HttpStatus.OK,
+    description: AUTH.LOGGED,
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: AUTH.USER_PASSWORD_OR_EMAIL_WRONG,
+  })
+  @UseGuards(LocalAuthGuard)
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  public async login(
+    @Body()
+    body: LoginUserDto,
+
+    @Req()
+    { user }: RequestWithUser
+  ) {
+    const userToken = await this.authService.createUserToken(user);
+
+    return fillDto(LoggedUserRdo, { ...user.toPOJO(), ...userToken });
+  }
+
+  @ApiResponse({
     status: HttpStatus.CREATED,
-    description: 'The new user has been successfully created.',
+    description: AUTH.CREATED,
+  })
+  @ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description: AUTH.USER_EXISTS,
   })
   @Post('register')
   public async create(
@@ -71,37 +102,17 @@ export class AuthenticationController {
   }
 
   @ApiResponse({
-    type: LoggedUserRdo,
-    status: HttpStatus.OK,
-    description: 'User has been seccesfully logged.',
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'Password or login is wrong.',
-  })
-  @UseGuards(LocalAuthGuard)
-  @Post('login')
-  public async login(
-    @Req()
-    { user }: RequestWithUser
-  ) {
-    const userToken = await this.authService.createUserToken(user);
-
-    return fillDto(LoggedUserRdo, { ...user.toPOJO(), ...userToken });
-  }
-
-  @ApiResponse({
     type: UserRdo,
     status: HttpStatus.OK,
-    description: 'User found',
+    description: AUTH.GET,
   })
   @HttpCode(HttpStatus.OK)
-  @Get('info')
+  @Post('info')
   public async info(
     @Body()
-    { ids }: { ids: string[] }
+    dto: UsersInfoDto,
   ) {
-    const users = await this.authService.getManyUsers(ids);
+    const users = await this.authService.getManyUsers(dto.ids);
 
     const result = {};
     users.forEach((item: BlogUserEntity) => {
@@ -115,8 +126,9 @@ export class AuthenticationController {
   @ApiResponse({
     type: UserRdo,
     status: HttpStatus.OK,
-    description: 'User found',
+    description: AUTH.GET,
   })
+  @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   public async show(
@@ -130,8 +142,9 @@ export class AuthenticationController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Update an access/refresh tokens',
+    description: AUTH.TOKEN,
   })
+  @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtRefreshGuard)
   @HttpCode(HttpStatus.OK)
   @Post('refresh')
@@ -143,9 +156,14 @@ export class AuthenticationController {
   }
 
   @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Check jwt token',
+    status: HttpStatus.CREATED,
+    description: AUTH.CHECK_TOKEN,
   })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: AUTH.UNAUTHORIZED,
+  })
+  @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard)
   @Post('check')
   public async checkToken(

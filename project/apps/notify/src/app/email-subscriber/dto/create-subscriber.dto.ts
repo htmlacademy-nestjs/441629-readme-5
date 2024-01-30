@@ -1,10 +1,24 @@
-import { IsEmail, IsNotEmpty } from 'class-validator';
-import { EMAIL_SUBSCRIBER_ERROR } from '../email-subscriber.constant';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { API, EMAIL_SUBSCRIBER_ERROR } from '../email-subscriber.constant';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateSubscriberDto {
-  @IsEmail({}, { message: EMAIL_SUBSCRIBER_ERROR.EMAIL_NOT_VALID })
+  @ApiProperty({
+    description: API.EMAIL,
+    example: API.EMAIL_EXAMPLE,
+  })
+  @IsEmail({}, {
+    message: EMAIL_SUBSCRIBER_ERROR.EMAIL_NOT_VALID,
+  })
   public email: string;
 
-  @IsNotEmpty({ message: EMAIL_SUBSCRIBER_ERROR.NAME_IS_EMPTY })
+  @ApiProperty({
+    description: API.NAME,
+    example: API.NAME_EXAMPLE,
+  })
+  @IsString()
+  @IsNotEmpty({
+    message: EMAIL_SUBSCRIBER_ERROR.NAME_IS_EMPTY
+  })
   public name: string;
 }

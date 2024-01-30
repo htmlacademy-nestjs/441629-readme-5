@@ -34,11 +34,7 @@ export class BlogController {
         users.add(item.userId);
       });
 
-      const res = await this.httpService.axiosRef.get(`${ApplicationServiceURL.Users}/info`, {
-        data: {
-          ids: Array.from(users),
-        }
-      });
+      const res = await this.httpService.axiosRef.post(`${ApplicationServiceURL.Users}/info`, { ids: Array.from(users) });
 
       const list = res.data;
 

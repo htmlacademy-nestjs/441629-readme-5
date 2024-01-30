@@ -9,7 +9,7 @@ export class EmailSubscriberService {
     private readonly emailSubscriberRepository: EmailSubscriberRepository,
   ) { }
 
-  public async addSubscriber(subscriber: CreateSubscriberDto) {
+  public async addSubscriber(subscriber: CreateSubscriberDto): Promise<EmailSubscriberEntity> {
     const { email } = subscriber;
     const existsSubscriber = await this.emailSubscriberRepository.findByEmail(email);
 
@@ -18,5 +18,11 @@ export class EmailSubscriberService {
     }
 
     return this.emailSubscriberRepository.save(new EmailSubscriberEntity().populate(subscriber));
+  }
+
+  public async getSubscribersEmails() {
+    const subscribers = await this.emailSubscriberRepository.findAll();
+
+    return subscribers.map(item => item.email);
   }
 }
