@@ -1,21 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsMongoId, IsNotEmpty, IsString, IsUUID, Length, max } from 'class-validator';
+import { COMMENT_VALIDATE } from '../blog-comment.constant';
 
 export class CreateCommentDto {
   @ApiProperty({
-    description: 'Comment for post from authorized user',
-    example: 'This is cool',
+    description: COMMENT_VALIDATE.MESSAGE,
+    example: COMMENT_VALIDATE.MESSAGE_EXAMPLE,
   })
   @IsString()
   @IsNotEmpty()
   @Length(10, 300, {
-    message: 'Comment must be string from 10 to 300 symbols'
+    message: COMMENT_VALIDATE.MESSAGE_LENGTH
   })
   public message: string;
 
   @ApiProperty({
-    description: 'Mongo ID of user who create a cooment',
-    example: 'aaa-aaa-aaa'
+    description: COMMENT_VALIDATE.USER_ID,
+    example: COMMENT_VALIDATE.USER_ID_EXAMPLE,
   })
   @IsString()
   @IsMongoId()
