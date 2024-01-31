@@ -9,6 +9,7 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { DeleteCommentDto } from './dto/delete-comment.dto';
 import { BlogCommentQuery } from './query/blog-comment.query';
 import { BlogCommentWithPaginationRdo } from './query/blog-comment-with-pagination.rdo';
+import { API } from './blog-comment.constant';
 
 @ApiTags('Blog comment service')
 @Controller('posts/:id/comments')
@@ -19,7 +20,7 @@ export class BlogCommentController {
 
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Show comments for post',
+    description: API.SHOW,
   })
   @Get('/')
   public async show(
@@ -40,7 +41,7 @@ export class BlogCommentController {
 
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: 'Create a new comment for post',
+    description: API.CREATE,
   })
   @Post('/')
   public async create(
@@ -57,7 +58,7 @@ export class BlogCommentController {
 
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,
-    description: 'Delete comment by ID',
+    description: API.DELETE,
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('/')

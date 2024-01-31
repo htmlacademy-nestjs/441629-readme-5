@@ -1,7 +1,7 @@
 # Личный проект «Readme»
 
 * Студент: [Дамир Масалимов](https://up.htmlacademy.ru/nodejs-2/5/user/441629).
-* Наставник: [Глеб Клецков](https://up.htmlacademy.ru/nodejs-2/5/user/1487865).
+* Наставник: [Андрей Осипук](https://up.htmlacademy.ru/nodejs-2/5/user/616431).
 
 ---
 
