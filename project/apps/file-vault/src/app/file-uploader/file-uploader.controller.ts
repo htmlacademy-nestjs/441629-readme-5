@@ -1,12 +1,13 @@
 import 'multer';
-import { Body, Controller, Get, MaxFileSizeValidator, Param, ParseFilePipe, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UploadedFile, UseInterceptors, UsePipes } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileUploaderService } from './file-uploader.service';
 import { fillDto } from '@project/shared/helpers';
 import { UploadedFileRdo } from './rdo/uploaded-file.rdo';
 import { MongoIdValidationPipe } from '@project/shared/core';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { FILE_INFO, MAX_FILE_SIZE } from './file-uploader.constant';
+import { FileValidationPipe } from './pipes/file-validation.pipe';
 
 @ApiTags('File Uploader routes')
 @Controller('files')
@@ -17,17 +18,12 @@ export class FileUploaderController {
 
   @Post('/upload')
   @UseInterceptors(FileInterceptor('file'))
+  @UsePipes(new FileValidationPipe({
+    maxSize: MAX_FILE_SIZE,
+    message: FILE_INFO.MAX_SIZE,
+  }))
   public async uploadFile(
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({
-            maxSize: MAX_FILE_SIZE,
-            message: FILE_INFO.MAX_SIZE,
-          }),
-        ],
-      })
-    )
+    @UploadedFile()
     file: Express.Multer.File,
   ) {
     const fileEntity = await this.fileUploaderService.saveFile(file);
