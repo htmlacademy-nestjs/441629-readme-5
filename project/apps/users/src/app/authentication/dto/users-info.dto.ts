@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsMongoId, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsMongoId } from 'class-validator';
 import { API } from '../authentication.constant';
 
 export class UsersInfoDto {
